@@ -61,6 +61,6 @@ Also included in the `Scripts/` folder are scripts to:
 
 GROND is named after the [wolf-shaped battering ram](https://lotr.fandom.com/wiki/Grond_(battering_ram)) that broke the Great Gate of Minas Tirith during the Battle of the Pelennor Fields, itself named in homage to the [great hammer of Angband](https://lotr.fandom.com/wiki/Grond_(hammer)) wielded by Morgoth, the first Dark Lord.  
 
-It was originally named FANGORN (Full-length Amplicons for the Next Generation Of rRNa analysis) to was renamed to avoid confusion with the much more popular [phangorn](https://cran.r-project.org/web/packages/phangorn/index.html).  
+It was originally named FANGORN (Full-length Amplicons for the Next Generation Of rRNa analysis) but was renamed to avoid confusion with the much more popular [phangorn](https://cran.r-project.org/web/packages/phangorn/index.html).  
 
 There may still be historic references to FANGORN in the scripts - please reach out if you find these and I will fix them  
