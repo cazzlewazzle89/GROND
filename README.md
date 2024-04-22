@@ -1,4 +1,4 @@
-# GROND: Great Ribosomal OperoN Database :wolf:
+# GROND: Genome-derived Ribosomal OperoN Database :wolf:
 ### A quality-checked and publicly available database of full-length 16S-ITS-23S rRNA operon sequences
 ##### (Formerly FANGORN)
 This repository makes available the scripts used to build the GROND databases described in our [preprint](https://doi.org/10.1101/2022.10.04.509801) and available for download [here](https://melbourne.figshare.com/articles/dataset/Fangorn_rrn_Database/20086916).  
