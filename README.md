@@ -1,11 +1,12 @@
 # GROND: Genome-derived Ribosomal OperoN Database
 ### A quality-checked and publicly available database of full-length 16S-ITS-23S rRNA operon sequences
 #### (Formerly FANGORN)
-This repository makes available the scripts used to build the GROND databases described in our [preprint](https://doi.org/10.1101/2022.10.04.509801) and available for download [here](https://zenodo.org/records/10889037).  
+This repository makes available the scripts used to download or build the GROND databases described in our [preprint](https://doi.org/10.1101/2022.10.04.509801) and available for download [here](https://zenodo.org/records/10889037).  
 
 Please get in touch if you have any comments, issues, or suggestions for improvements.
 
-I plan to update the database in line with each major GTDB release.
+I plan to update the database in line with each major GTDB release.  
+If I am behind the times and don't have a database for the latest GTDB release then let me know by posting an issue.  
 
 ## Quick Links
 [Database Download](https://github.com/cazzlewazzle89/GROND#database-download)  
@@ -17,10 +18,11 @@ I plan to update the database in line with each major GTDB release.
 ## Database Download
 
 The database is hosted on Zenodo so downloading each file individually is relatively simple.  
-You can use either the `download` button on the website or copy the URL, minus the `?download=1` suffix, for downloading with `wget` or `curl`.  
-For the sake of convenience, download scripts have been included in this repository - they just contain the `curl` commands ready to go and can be used my simply running `sh download_gtdb_nr.sh`.  
+The simplest method is to use the `download` button on the website.  
+For downloading with `wget` or `curl` - you can copy the URL of each file, minus the `?download=1` suffix.  
+For the sake of convenience, download scripts have been included in this repository - they just contain the `curl` commands ready to go and can be used by simply running `sh download_gtdb_nr.sh`.  
 
-## Dependencies
+## Dependencies for Database Construction
 Make sure these are in your $PATH
 
 ### Command Line Tools
@@ -67,7 +69,7 @@ Also included in the `Scripts/` folder are scripts to:
 
 ## Note on Database Construction 
 
-GROND is envisaged as a tool to aid standardisation of 16S-ITS-23S rRNA analysis and allow comparison of results and, as such, building your own version would defeat the purpose. If I am behind the times and don't have a database for the latest GTDB release then let me know by posting an issue.  
+GROND is envisaged as a tool to aid standardisation of 16S-ITS-23S rRNA analysis and allow comparison of results and, as such, building your own version would defeat the purpose.  
 
 That said, if you want to build your own version using the NCBI taxonomy system, make sure you have the most up-to-date version of the taxonomy database. I do this using the commands described in the [TaxonKit manual](https://bioinf.shenwei.me/taxonkit/usage/#before-use).  
 
