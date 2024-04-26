@@ -1,25 +1,29 @@
-# GROND: Genome-derived Ribosomal OperoN Database :wolf:
+# GROND: Genome-derived Ribosomal OperoN Database
 ### A quality-checked and publicly available database of full-length 16S-ITS-23S rRNA operon sequences
 #### (Formerly FANGORN)
 This repository makes available the scripts used to build the GROND databases described in our [preprint](https://doi.org/10.1101/2022.10.04.509801) and available for download [here](https://zenodo.org/records/10889037).  
-
-GROND is envisaged as a tool to aid standardisation of 16S-ITS-23S rRNA analysis and allow comparison of results and, as such, building your own version would defeat the purpose.  
-
-The database is hosted on Zenodo so downloading each file individually is relatively simple.  
-You can use either the `download` button on the website or copy the URL, minus the `?download=1` suffix, for downloading with `wget` or `curl`.  
-For the sake of convenience, download scripts have been included in this repository - they just have the `curl` commands ready to go and can be used my simply running `sh download_gtdb_nr.sh`.  
 
 Please get in touch if you have any comments, issues, or suggestions for improvements.
 
 I plan to update the database in line with each major GTDB release.
 
-Note: If you want to build your own version using the NCBI taxonomy system, make sure you have the most up-to-date version of the taxonomy database. I do this using the commands described in the [TaxonKit manual](https://bioinf.shenwei.me/taxonkit/usage/#before-use).  
-This does not download automatically as I often encounter an EOF error while extracting the `taxdump` tarball so it is less hassle to do it manually using the accomanying script `get_taxonkit_DB.sh` before running `refseq_grond.sh`.  
-You do not need to do this when using the GTDB taxonomy system as the information is available on [the website](https://gtdb.ecogenomic.org/downloads) and will be automatically downloaded when running `gtdb_grond.sh`.
+## Quick Links
+[Database Download]
+[Dependencies](https://github.com/cazzlewazzle89/GROND#dependencies)
+[Usage](https://github.com/cazzlewazzle89/GROND#usage)
+[Note on Database Construction](https://github.com/cazzlewazzle89/GROND#note-on-database-construction)
+[Note on Naming](https://github.com/cazzlewazzle89/GROND#note-on-naming)
+
+## Database Download
+
+The database is hosted on Zenodo so downloading each file individually is relatively simple.  
+You can use either the `download` button on the website or copy the URL, minus the `?download=1` suffix, for downloading with `wget` or `curl`.  
+For the sake of convenience, download scripts have been included in this repository - they just contain the `curl` commands ready to go and can be used my simply running `sh download_gtdb_nr.sh`.  
 
 ## Dependencies
 Make sure these are in your $PATH
 
+### Command Line Tools
 | Software  | Version Tested |
 | --- | --- |
 | [Barrnap](https://github.com/tseemann/barrnap) | 0.9 |
@@ -30,7 +34,6 @@ Make sure these are in your $PATH
 | [SeqKit](https://github.com/shenwei356/seqkit) | 2.2.0 |
 | [TaxonKit](https://bioinf.shenwei.me/taxonkit/) | 0.8.0  |
 | [VSEARCH](https://github.com/torognes/vsearch) | 2.17.1  |
-
 
 ### R Packages
 
@@ -60,7 +63,16 @@ Also included in the `Scripts/` folder are scripts to:
 * collate the files necessary to generate the manuscript figures and statistics  
 * calculate average nucleotide identity (ANI) between all pairwise combinations of complete genomes used to construct both GTDB and RefSeq databases  
 * train a Qiime2 Naive Bayes feature classifier to assign taxonomy to amplicons (generated using all tested primer pairs) using each database - I will make these available shortly  
-* calculate intragenomic diversity of complete GTDB genomes
+* calculate intragenomic diversity of complete GTDB genomes  
+
+## Note on Database Construction 
+
+GROND is envisaged as a tool to aid standardisation of 16S-ITS-23S rRNA analysis and allow comparison of results and, as such, building your own version would defeat the purpose. If I am behind the times and don't have a database for the latest GTDB release then let me know by posting an issue.  
+
+That said, if you want to build your own version using the NCBI taxonomy system, make sure you have the most up-to-date version of the taxonomy database. I do this using the commands described in the [TaxonKit manual](https://bioinf.shenwei.me/taxonkit/usage/#before-use).  
+
+This does not download automatically as I often encounter an EOF error while extracting the `taxdump` tarball so it is less hassle to do it manually using the accomanying script `get_taxonkit_DB.sh` before running `refseq_grond.sh`.  
+You do not need to do this when using the GTDB taxonomy system as the information is available on [the website](https://gtdb.ecogenomic.org/downloads) and will be automatically downloaded when running `gtdb_grond.sh`.
 
 ## Note on Naming
 
