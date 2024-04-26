@@ -1,8 +1,13 @@
 # GROND: Genome-derived Ribosomal OperoN Database :wolf:
 ### A quality-checked and publicly available database of full-length 16S-ITS-23S rRNA operon sequences
-##### (Formerly FANGORN)
-This repository makes available the scripts used to build the GROND databases described in our [preprint](https://doi.org/10.1101/2022.10.04.509801) and available for download [here](https://melbourne.figshare.com/articles/dataset/Fangorn_rrn_Database/20086916).  
+#### (Formerly FANGORN)
+This repository makes available the scripts used to build the GROND databases described in our [preprint](https://doi.org/10.1101/2022.10.04.509801) and available for download [here](https://zenodo.org/records/10889037).  
+
 GROND is envisaged as a tool to aid standardisation of 16S-ITS-23S rRNA analysis and allow comparison of results and, as such, building your own version would defeat the purpose.  
+
+The database is hosted on Zenodo so downloading each file individually is relatively simple.  
+You can use either the `download` button on the website or copy the URL, minus the `?download=1` suffix, for downloading with `wget` or `curl`.  
+For the sake of convenience, download scripts have been included in this repository - they just have the `curl` commands ready to go and can be used my simply running `sh download_gtdb_nr.sh`.  
 
 Please get in touch if you have any comments, issues, or suggestions for improvements.
 
@@ -52,7 +57,7 @@ Both scripts mentioned above will do the majority of the work but will call R sc
 R scripts are also used by the GTDB database builder to extract assembly information and identify genomes which are missing annotation.  
 
 Also included in the `Scripts/` folder are scripts to:  
-* collate the files necessary to generate the manuscripts figures and statistics  
+* collate the files necessary to generate the manuscript figures and statistics  
 * calculate average nucleotide identity (ANI) between all pairwise combinations of complete genomes used to construct both GTDB and RefSeq databases  
 * train a Qiime2 Naive Bayes feature classifier to assign taxonomy to amplicons (generated using all tested primer pairs) using each database - I will make these available shortly  
 * calculate intragenomic diversity of complete GTDB genomes
