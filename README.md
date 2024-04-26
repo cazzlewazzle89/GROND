@@ -8,11 +8,11 @@ Please get in touch if you have any comments, issues, or suggestions for improve
 I plan to update the database in line with each major GTDB release.
 
 ## Quick Links
-[Database Download]
-[Dependencies](https://github.com/cazzlewazzle89/GROND#dependencies)
-[Usage](https://github.com/cazzlewazzle89/GROND#usage)
-[Note on Database Construction](https://github.com/cazzlewazzle89/GROND#note-on-database-construction)
-[Note on Naming](https://github.com/cazzlewazzle89/GROND#note-on-naming)
+[Database Download](https://github.com/cazzlewazzle89/GROND#database-download)
+[Dependencies](https://github.com/cazzlewazzle89/GROND#dependencies)  
+[Usage](https://github.com/cazzlewazzle89/GROND#usage)  
+[Note on Database Construction](https://github.com/cazzlewazzle89/GROND#note-on-database-construction)  
+[Note on Naming](https://github.com/cazzlewazzle89/GROND#note-on-naming)  
 
 ## Database Download
 
