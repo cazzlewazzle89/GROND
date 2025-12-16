@@ -26,7 +26,7 @@ If I am behind the times and don't have a database for the latest GTDB release t
 ## Database Download
 
 The database is hosted on Zenodo so downloading each file individually is relatively simple.  
-The simplest method is download with `wget` or `curl` - you can copy the URL of each file, minus the `?download=1` suffix.  
+The simplest method is to use `wget` or `curl` to target the URL of each file, minus the `?download=1` suffix.  
 For example, you would use `wget https://zenodo.org/records/17704151/files/full.fna.gz` to download the full database. 
 
 ## Database Sizes
