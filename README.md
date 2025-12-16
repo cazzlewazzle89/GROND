@@ -31,14 +31,14 @@ For example, you would use `wget https://zenodo.org/records/17704151/files/full.
 
 ## Database Sizes
 
-|Version|Sequences|Disk Space|
-|---|--|---|
-|Full|548,962|146M|
-|nr 99.9|192,455|155M|
-|nr 99|64,062|72M|
-|nr 97|35,506|45M|
-|nr 95|24,226|33M|
-|nr 90|11,567|17M|
+| Version | Sequences | Disk Space |
+| --- | --- | --- |
+| Full | 548,962 | 146M |
+| nr 99.9 | 192,455 | 155M |
+| nr 99 | 64,062 | 72M |
+| nr 97 | 35,506 | 45M |
+| nr 95 | 24,226 | 33M |
+| nr 90 | 11,567 | 17M |
 
 ## Dependencies for Database Construction
 Make sure these are in your $PATH
@@ -64,11 +64,11 @@ Make sure these are in your $PATH
 
 The conda environment that I used to build the database can be created using `conda env create -f grond.yml` (the yml is provded in this repository).  
 This will create an environment called `grond` which can be loaded with `conda activate grond`.  
-This environment contains everything except `csvtk` and `Seqkit`. These are available through bioconda but I used preexisting non-conda installations.
+This environment contains everything except `csvtk`, which is available through bioconda but I used preexisting non-conda installations.
 
 ## Usage
 
-`grond.sh` is used to build the database from the latest GTDB release.
+The `grond.sh` script is used to build the database from the latest GTDB release.
 By default it will use:  
 - 50 parallel processes to download assemblies and annotations and edit seqid headers  
 - 50 threads for VSEARCH clustering  
