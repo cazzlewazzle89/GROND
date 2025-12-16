@@ -30,7 +30,9 @@ The simplest method is download with `wget` or `curl` - you can copy the URL of 
 For example, you would use `wget https://zenodo.org/records/17704151/files/full.fna.gz` to download the full database. 
 
 ## Database Sizes
+
 |Version|Sequences|Disk Space|
+|---|--|---|
 |Full|548,962|146M|
 |nr 99.9|192,455|155M|
 |nr 99|64,062|72M|
