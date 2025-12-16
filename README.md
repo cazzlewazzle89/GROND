@@ -17,6 +17,7 @@ If I am behind the times and don't have a database for the latest GTDB release t
 
 ## Quick Links
 [Database Download](https://github.com/cazzlewazzle89/GROND#database-download)  
+[Database Sizes](https://github.com/cazzlewazzle89/GROND#database-download)
 [Dependencies](https://github.com/cazzlewazzle89/GROND#dependencies)  
 [Usage](https://github.com/cazzlewazzle89/GROND#usage)  
 [Note on Database Construction](https://github.com/cazzlewazzle89/GROND#note-on-database-construction)  
@@ -27,6 +28,15 @@ If I am behind the times and don't have a database for the latest GTDB release t
 The database is hosted on Zenodo so downloading each file individually is relatively simple.  
 The simplest method is download with `wget` or `curl` - you can copy the URL of each file, minus the `?download=1` suffix.  
 For example, you would use `wget https://zenodo.org/records/17704151/files/full.fna.gz` to download the full database. 
+
+## Database Sizes
+|Version|Sequences|Disk Space|
+|Full|548,962|146M|
+|nr 99.9|192,455|155M|
+|nr 99|64,062|72M|
+|nr 97|35,506|45M|
+|nr 95|24,226|33M|
+|nr 90|11,567|17M|
 
 ## Dependencies for Database Construction
 Make sure these are in your $PATH
