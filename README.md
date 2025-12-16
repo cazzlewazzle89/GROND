@@ -6,14 +6,14 @@ For a more in-depth comparison of 16S-ITS-23S analysis methods, see our [publica
 
 Please get in touch if you have any comments, issues, or suggestions for improvements.
 
-Note: this is an updated version of the database whose construction differs from that described in the original manuscript. 
-For release 226 and all future releases - GROND will include only genomes sourced from the Genome Taxonomy Database (GTDB).
-For this same set of genomes, two parallel taxonomy annotations are now provided: one based on GTDB lineages and one based on NCBI lineages. This allows users to work within either taxonomic framework without needing to maintain separate genome collections or perform additional remapping steps.
+Note: this is an updated version of the database whose construction differs from that described in the original manuscript.  
+For release 226 and all future releases - GROND will include only genomes sourced from the Genome Taxonomy Database (GTDB).  
+For this same set of genomes, two parallel taxonomy annotations are now provided: one based on GTDB lineages and one based on NCBI lineages. This allows users to work within either taxonomic framework without needing to maintain separate genome collections or perform additional remapping steps.  
 
-In addition, the dereplication strategy has been expanded to include multiple nucleotide identity thresholds, providing greater flexibility for downstream analyses by allowing users to select genome sets at different levels of redundancy, depending on compute resources and desired phylogenetic resolution.
+In addition, the dereplication strategy has been expanded to include multiple nucleotide identity thresholds, providing greater flexibility for downstream analyses by allowing users to select genome sets at different levels of redundancy, depending on compute resources and desired phylogenetic resolution.  
 
-I plan to update the database in line with each major GTDB release.  
-If I am behind the times and don't have a database for the latest GTDB release then let me know by posting an issue.  
+I plan to update the database in line with each major GTDB release.    
+If I am behind the times and don't have a database for the latest GTDB release then let me know by posting an issue.    
 
 ## Quick Links
 [Database Download](https://github.com/cazzlewazzle89/GROND#database-download)  
