@@ -1,6 +1,6 @@
 # GROND: Genome-derived Ribosomal OperoN Database
 ### A quality-checked and publicly available database of full-length 16S-ITS-23S rRNA operon sequences
-This repository makes available the scripts used to build the GROND databases described in the [manuscipt](https://doi.org/10.1099/mgen.0.001255) and available for download [here](https://zenodo.org/records/17704151).  
+This repository makes available the scripts used to build the GROND databases described in the [manuscript](https://doi.org/10.1099/mgen.0.001255) and available for download [here](https://zenodo.org/records/17704151).  
 
 For a more in-depth comparison of 16S-ITS-23S analysis methods, see our [publication](https://www.nature.com/articles/s41598-024-83410-7) in Scientific Reports.  
 
