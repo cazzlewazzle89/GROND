@@ -1,11 +1,16 @@
 # GROND: Genome-derived Ribosomal OperoN Database
 ### A quality-checked and publicly available database of full-length 16S-ITS-23S rRNA operon sequences
-#### (Formerly FANGORN)
-This repository makes available the scripts used to download or build the GROND databases described in the [manuscipt](https://doi.org/10.1099/mgen.0.001255) and available for download [here](https://zenodo.org/records/10889037).  
+This repository makes available the scripts used to build the GROND databases described in the [manuscipt](https://doi.org/10.1099/mgen.0.001255) and available for download [here](https://zenodo.org/records/17704151).  
 
-For a more in-depth comparison of 16S-ITS-23S analysis methods, see our [preprint](https://www.researchsquare.com/article/rs-4006805/v1) (currently under review).  
+For a more in-depth comparison of 16S-ITS-23S analysis methods, see our [publication](https://www.nature.com/articles/s41598-024-83410-7) in Scientific Reports.  
 
 Please get in touch if you have any comments, issues, or suggestions for improvements.
+
+Note: this is an updated version of the database whose construction differs from that described in the original manuscript. 
+For release 226 and all future releases - GROND will include only genomes sourced from the Genome Taxonomy Database (GTDB).
+For this same set of genomes, two parallel taxonomy annotations are now provided: one based on GTDB lineages and one based on NCBI lineages. This allows users to work within either taxonomic framework without needing to maintain separate genome collections or perform additional remapping steps.
+
+In addition, the dereplication strategy has been expanded to include multiple nucleotide identity thresholds, providing greater flexibility for downstream analyses by allowing users to select genome sets at different levels of redundancy, depending on compute resources and desired phylogenetic resolution.
 
 I plan to update the database in line with each major GTDB release.  
 If I am behind the times and don't have a database for the latest GTDB release then let me know by posting an issue.  
@@ -20,9 +25,8 @@ If I am behind the times and don't have a database for the latest GTDB release t
 ## Database Download
 
 The database is hosted on Zenodo so downloading each file individually is relatively simple.  
-The simplest method is to use the `download` button on the website.  
-For downloading with `wget` or `curl` - you can copy the URL of each file, minus the `?download=1` suffix.  
-For the sake of convenience, download scripts have been included in this repository - they just contain the `curl` commands ready to go and can be used by simply running `sh download_gtdb_nr.sh`.  
+The simplest method is download with `wget` or `curl` - you can copy the URL of each file, minus the `?download=1` suffix.  
+For example, you would use `wget https://zenodo.org/records/17704151/files/full.fna.gz` to download the full database. 
 
 ## Dependencies for Database Construction
 Make sure these are in your $PATH
@@ -52,31 +56,22 @@ This environment contains everything except `csvtk` and `Seqkit`. These are avai
 
 ## Usage
 
-`refseq_grond.sh` and `gtdb_grond.sh` are used to build databases using RefSeq and GTDB taxonomy respectively.  
-By default they will use:  
+`grond.sh` is used to build the database from the latest GTDB release.
+By default it will use:  
 - 50 parallel processes to download assemblies and annotations and edit seqid headers  
 - 50 threads for VSEARCH clustering  
-- 20 threads for identifying rRNA genes in genomes without accompanying annotation using Barrnap  
+- 20 threads for identifying rRNA genes in genomes using Barrnap  
 
-These settings, along with VSEARCH clustering identity (default: 99.9%) and output directory (default: `./Grond_GTDB/` or `./Grond_RefSeq/`) can be changed by editing the variables at the beginning of the relevant script.  
+These settings, along with output directory can be changed by editing the variables at the beginning of the relevant script.  
 
-Both scripts mentioned above will do the majority of the work but will call R scripts to identify _rrn_ operons, perform quality checking (the details of which can be found in the GROND publication), and join _rrn_ operon identifiers to the source genome taxonomy.
-R scripts are also used by the GTDB database builder to extract assembly information and identify genomes which are missing annotation.  
+Update from the original version: all dereplicated databases will be constructed by running `grond.sh` - I removed the option to specify the dereplication threshold. 
 
-Also included in the `Scripts/` folder are scripts to:  
-* collate the files necessary to generate the manuscript figures and statistics  
-* calculate average nucleotide identity (ANI) between all pairwise combinations of complete genomes used to construct both GTDB and RefSeq databases  
-* train a Qiime2 Naive Bayes feature classifier to assign taxonomy to amplicons (generated using all tested primer pairs) using each database - I will make these available shortly  
-* calculate intragenomic diversity of complete GTDB genomes  
+This script will do the majority of the work but will call R scripts to identify _rrn_ operons, perform quality checking (the details of which can be found in the GROND publication), and join _rrn_ operon identifiers to the source genome taxonomy.
+R scripts are also used by the GTDB database builder to extract assembly information.
 
 ## Note on Database Construction 
 
 GROND is envisaged as a tool to aid standardisation of 16S-ITS-23S rRNA analysis and allow comparison of results and, as such, building your own version would defeat the purpose.  
-
-That said, if you want to build your own version using the NCBI taxonomy system, make sure you have the most up-to-date version of the taxonomy database. I do this using the commands described in the [TaxonKit manual](https://bioinf.shenwei.me/taxonkit/usage/#before-use).  
-
-This does not download automatically as I often encounter an EOF error while extracting the `taxdump` tarball so it is less hassle to do it manually using the accomanying script `get_taxonkit_DB.sh` before running `refseq_grond.sh`.  
-You do not need to do this when using the GTDB taxonomy system as the information is available on [the website](https://gtdb.ecogenomic.org/downloads) and will be automatically downloaded when running `gtdb_grond.sh`.
 
 ## Note on Naming
 

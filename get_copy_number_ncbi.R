@@ -1,27 +1,27 @@
 suppressMessages(suppressWarnings(library('tidyverse')))
 
-taxonomy <- read_delim('gtdb_taxonomy.tsv',
-                       col_names = c('Assembly', 'Taxonomy'), delim = '\t') %>%
+taxonomy <- read_delim('taxonomy.tsv',
+                       col_names = c('Assembly', 'DROPME', 'Taxonomy'), delim = '\t') %>%
+  dplyr::select(-DROPME) %>%
   mutate(Assembly = str_remove(Assembly, '^[RG][SB]_')) %>%
   mutate(Assembly = str_replace(Assembly, '\\.[0-9]$', '')) 
 
-length_complete <- read_delim('Outputs_Complete/seq_length.tsv',
-                          col_names = c('Assembly__SeqID', 'Length'), delim = '\t') %>%
-  separate(Assembly__SeqID, into = c('Assembly', 'SeqID'), sep = '__')
+rrn_complete <- read_delim('Outputs_Complete/master_rrna.gff', delim = '\t') %>%
+  select(seqid, OperonID) %>%
+  separate(seqid, into = c('Assembly', 'SeqID'), sep = '__')
 
-length_incomplete <- read_delim('Outputs_Incomplete/seq_length.tsv',
-                            col_names = c('Assembly__SeqID', 'Length'), delim = '\t') %>%
-  separate(Assembly__SeqID, into = c('Assembly', 'SeqID'), sep = '__')
+rrn_incomplete <- read_delim('Outputs_Incomplete/master_rrna.gff', delim = '\t') %>%
+  select(seqid, OperonID) %>%
+  separate(seqid, into = c('Assembly', 'SeqID'), sep = '__')
 
-length_combined <- bind_rows(length_complete,
-                             length_incomplete) %>%
+rrn_combined <- bind_rows(rrn_complete,
+                 rrn_incomplete) %>%
   group_by(Assembly) %>%
-  summarise(Length = sum(Length)) %>%
+  summarise(CopyNumber = n()) %>%
   left_join(taxonomy)
 
-stats_complete <- length_combined %>%
-  filter(Assembly %in% length_complete$Assembly) %>%
-  mutate(Taxonomy = str_remove(Taxonomy, '\\|t__.*')) %>% 
+stats_complete <- rrn_combined %>%
+  filter(Assembly %in% rrn_complete$Assembly) %>%
   mutate(Lineage = Taxonomy) %>%
   separate_rows(Taxonomy, sep = ';') %>%
   mutate(Rank = str_remove(Taxonomy, '__.*') %>% toupper) %>%
@@ -34,12 +34,12 @@ stats_complete <- length_combined %>%
                                                            if_else(Rank == 'G', str_remove(Lineage, ';s__.*'), Lineage))))))) %>%
   group_by(Taxonomy, Rank, Lineage) %>% 
   summarise(GenomeCount_Complete = n(),
-            GenomeLength_Mean_Complete = mean(Length),
-            GenomeLength_Median_Complete = median(Length)) %>%
+            CopyNumber_Mean_Complete = mean(CopyNumber),
+            CopyNumber_Median_Complete = median(CopyNumber),
+            CopyNumber_SD_Complete = sd(CopyNumber)) %>%
   arrange(Rank)
 
-stats_combined <- length_combined %>%
-  mutate(Taxonomy = str_remove(Taxonomy, '\\|t__.*')) %>% 
+stats_combined <- rrn_combined %>%
   mutate(Lineage = Taxonomy) %>%
   separate_rows(Taxonomy, sep = ';') %>%
   mutate(Rank = str_remove(Taxonomy, '__.*') %>% toupper) %>%
@@ -52,10 +52,11 @@ stats_combined <- length_combined %>%
                                                            if_else(Rank == 'G', str_remove(Lineage, ';s__.*'), Lineage))))))) %>%
   group_by(Taxonomy, Rank, Lineage) %>% 
   summarise(GenomeCount_All = n(),
-            GenomeLength_Mean_All = mean(Length),
-            GenomeLength_Median_All = median(Length)) %>%
+            CopyNumber_Mean_All = mean(CopyNumber),
+            CopyNumber_Median_All = median(CopyNumber),
+            CopyNumber_SD_All = sd(CopyNumber)) %>%
   arrange(Rank)
 
 stats_combined %>%
   left_join(stats_complete) %>%
-  write_delim('stats_genomelength.tsv', quote = 'none', delim = '\t')
+  write_delim('stats_copynumber_ncbi.tsv', quote = 'none', delim = '\t')

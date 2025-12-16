@@ -1,7 +1,8 @@
 suppressMessages(suppressWarnings(library('tidyverse')))
 
-taxonomy <- read_delim('gtdb_taxonomy.tsv',
-                       col_names = c('Assembly', 'Taxonomy'), delim = '\t') %>%
+taxonomy <- read_delim('taxonomy.tsv',
+                       col_names = c('Assembly', 'Taxonomy', 'DROPME'), delim = '\t') %>%
+  dplyr::select(-DROPME) %>%
   mutate(Assembly = str_remove(Assembly, '^[RG][SB]_')) %>%
   mutate(Assembly = str_replace(Assembly, '\\.[0-9]$', '')) 
 
@@ -34,7 +35,8 @@ stats_complete <- rrn_combined %>%
   group_by(Taxonomy, Rank, Lineage) %>% 
   summarise(GenomeCount_Complete = n(),
             CopyNumber_Mean_Complete = mean(CopyNumber),
-            CopyNumber_Median_Complete = median(CopyNumber)) %>%
+            CopyNumber_Median_Complete = median(CopyNumber),
+            CopyNumber_SD_Complete = sd(CopyNumber)) %>%
   arrange(Rank)
 
 stats_combined <- rrn_combined %>%
@@ -51,9 +53,10 @@ stats_combined <- rrn_combined %>%
   group_by(Taxonomy, Rank, Lineage) %>% 
   summarise(GenomeCount_All = n(),
             CopyNumber_Mean_All = mean(CopyNumber),
-            CopyNumber_Median_All = median(CopyNumber)) %>%
+            CopyNumber_Median_All = median(CopyNumber),
+            CopyNumber_SD_All = sd(CopyNumber)) %>%
   arrange(Rank)
 
 stats_combined %>%
   left_join(stats_complete) %>%
-  write_delim('stats_copynumber.tsv', quote = 'none', delim = '\t')
+  write_delim('stats_copynumber_gtdb.tsv', quote = 'none', delim = '\t')

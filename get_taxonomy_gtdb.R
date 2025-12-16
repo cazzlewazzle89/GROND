@@ -1,13 +1,18 @@
 suppressMessages(suppressWarnings(library('tidyverse')))
 
+# parse positional argument (identity threshold)
+args <- commandArgs(trailingOnly = TRUE)
+pid <- args[1]
+
 taxonomicRanks <- c('Kingdom', 'Phylum', 'Class', 'Order',
                     'Family', 'Genus', 'Species')
 
 # IMPORT GTDB TAXONOMY INFORMATION
-gtdb_taxonomy <- read.delim('gtdb_taxonomy.tsv', header = F, sep = '\t') %>%
-  mutate(V1 = str_replace(V1, '^[RG][SB]_', '')) %>%
-  mutate(V1 = str_replace(V1, '\\.[0-9]$', '')) %>%
-  mutate(V2 = str_replace_all(V2, ';' ,'|'))
+taxonomy <- read.delim('taxonomy.tsv', sep = '\t') %>%
+  dplyr::select(accession, gtdb_taxonomy) %>%
+  mutate(accession = str_replace(accession, '^[RG][SB]_', '')) %>%
+  mutate(accession = str_replace(accession, '\\.[0-9]$', '')) %>%
+  mutate(gtdb_taxonomy = str_replace_all(gtdb_taxonomy, ';' ,'|'))
 
 # IMPORT OPERON INFORMATION (OPERONID AND ASSEMBLY ACCESSION ARE THE IMPORTANT COLUMNS)
 complete_operons <- read.delim('Outputs_Complete/master_rrna.gff', header = T, sep = '\t') %>%
@@ -23,31 +28,31 @@ combined_operons <- rbind(complete_operons,
 
 # WRITE taxFull FILES
 complete_operons %>%
-  left_join(gtdb_taxonomy, by = c('Assembly' = 'V1')) %>%
-  select(OperonID, V2) %>%
-  mutate(V2 = str_replace_all(V2, ';' ,'|')) %>%
-  write.table('Outputs_Complete/taxFull.tsv', row.names = F, col.names = F, quote = F, sep = '\t')
+  left_join(taxonomy, by = c('Assembly' = 'accession')) %>%
+  select(OperonID, gtdb_taxonomy) %>%
+  mutate(gtdb_taxonomy = str_replace_all(gtdb_taxonomy, ';' ,'|')) %>%
+  write.table('Outputs_Complete/taxFull_gtdb.tsv', row.names = F, col.names = F, quote = F, sep = '\t')
 
 combined_operons %>%
-  left_join(gtdb_taxonomy, by = c('Assembly' = 'V1')) %>%
-  select(OperonID, V2) %>%
-  mutate(V2 = str_replace_all(V2, ';' ,'|')) %>%
-  write.table('Outputs_Combined/taxFull.tsv', row.names = F, col.names = F, quote = F, sep = '\t')
+  left_join(taxonomy, by = c('Assembly' = 'accession')) %>%
+  select(OperonID, gtdb_taxonomy) %>%
+  mutate(gtdb_taxonomy = str_replace_all(gtdb_taxonomy, ';' ,'|')) %>%
+  write.table('Outputs_Combined/taxFull_gtdb.tsv', row.names = F, col.names = F, quote = F, sep = '\t')
 
-##### ASSIGNING TAXONOMY TO NR99.9% CLUSTERS FROM COMBINED OUTPUT BASED ON THREE DIFFERENT SCHEMES
+##### ASSIGNING TAXONOMY TO NR CLUSTERS FROM COMBINED OUTPUT BASED ON THREE DIFFERENT SCHEMES
 ##### CAN SUBSET OUTPUT COMPLETE ONLY LATER
 # import vsearch outputs and taxonomy info
-vsearch_centroids <- read.delim('Outputs_Combined/vsearch_centroids.tsv', header = F, sep = '\t') %>%
+vsearch_centroids <- read.delim(paste0('Outputs_Combined/vsearch_centroids_', pid, '.tsv'), header = F, sep = '\t') %>%
   left_join(combined_operons, by = c('V9' = 'OperonID'))
-vsearch_hits <- read.delim('Outputs_Combined/vsearch_hits.tsv', header = F, sep = '\t') %>%
+vsearch_hits <- read.delim(paste0('Outputs_Combined/vsearch_hits_', pid, '.tsv'), header = F, sep = '\t') %>%
   left_join(combined_operons, by = c('V9' = 'OperonID'))
 vsearch <- rbind(vsearch_centroids, vsearch_hits) %>%
   select(V2, V9, Assembly) %>%
   rename(ClusterID = V2, OperonID = V9) %>%
   arrange(ClusterID)
-tax <- gtdb_taxonomy %>%
-  separate(V2, sep = '\\|', into = taxonomicRanks, remove = F) %>%
-  rename(Assembly = V1, Taxonomy = V2)
+tax <- taxonomy %>%
+  separate(gtdb_taxonomy, sep = '\\|', into = taxonomicRanks, remove = F) %>%
+  rename(Assembly = accession, Taxonomy = gtdb_taxonomy)
 
 # 1 - taxRep: RefSeq taxonomy of the cluster representative sequence
 taxRep <- vsearch_centroids %>%
@@ -58,7 +63,7 @@ taxRep <- vsearch_centroids %>%
 taxRep %>%
   select(OperonID, Taxonomy) %>%
   arrange(OperonID) %>%
-  write.table('Outputs_Combined/taxRep.tsv', quote = F, row.names = F, col.names = F, sep = '\t')
+  write.table(paste0('Outputs_Combined/taxRep_gtdb_', pid, '.tsv'), quote = F, row.names = F, col.names = F, sep = '\t')
 
 # 2 - taxLCA: lowest common ancestor of all sequences in the cluster
 # first identify all clusters with a 100% species consensus
@@ -229,14 +234,14 @@ taxLCA %>%
   select(-c('ClusterID', 'LCA_Rank')) %>%
   unite(Taxonomy, Kingdom:Species, sep = '\\|') %>%
   arrange(OperonID) %>%
-  write.table('Outputs_Combined/taxLCA.tsv', quote = F, row.names = F, col.names = F, sep = '\t')
+  write.table(paste0('Outputs_Combined/taxLCA_gtdb_', pid, '.tsv'), quote = F, row.names = F, col.names = F, sep = '\t')
 
 taxLCA %>%
   group_by(LCA_Rank) %>%
   summarise(Count = n()) %>%
   arrange(-Count) %>%
   mutate(Percentage = 100*(Count/sum(Count))) %>%
-  write.table('Outputs_Combined/taxLCA_ranksummary.tsv', quote = F, row.names = F, sep = '\t')
+  write.table(paste0('Outputs_Combined/taxLCA_gtdb_', pid, 'ranksummary.tsv'), quote = F, row.names = F, sep = '\t')
 
 vsearch_tax %>%
   filter(ClusterID %in% (taxLCA %>%
@@ -244,7 +249,7 @@ vsearch_tax %>%
                            pull(ClusterID))) %>%
   group_by(ClusterID, Species) %>%
   summarise(OperonCount = n()) %>%
-  write.table('Outputs_Combined/taxLCA_conflictingspecies.tsv', quote = F, row.names = F, sep = '\t')
+  write.table(paste0('Outputs_Combined/taxLCA_gtdb_', pid, 'conflictingspecies.tsv'), quote = F, row.names = F, sep = '\t')
 
 # 3 - taxMaj: lowest taxonomic rank at which there is a single majority agreement of all sequences in the cluster
 # first identify all clusters with a species majority
@@ -348,7 +353,7 @@ taxMaj <- vsearch_tax %>%
 
 taxMaj %>%
   arrange(OperonID) %>%
-  write.table('Outputs_Combined/taxMaj.tsv', quote = F, row.names = F, col.names = F, sep = '\t')
+  write.table(paste0('Outputs_Combined/taxMaj_gtdb_', pid, '.tsv'), quote = F, row.names = F, col.names = F, sep = '\t')
 
 data.frame(Rank = taxonomicRanks[1:7],
            Count = c(dim(maj_kingdom)[1],
@@ -359,7 +364,7 @@ data.frame(Rank = taxonomicRanks[1:7],
                      dim(maj_genus)[1],
                      dim(maj_species)[1])) %>%
   mutate(Percentage = 100*(Count/sum(Count))) %>%
-  write.table('Outputs_Combined/taxMaj_ranksummary.tsv', quote = F, row.names = F, sep = '\t')
+  write.table(paste0('Outputs_Combined/taxMaj_gtdb_', pid, 'ranksummary.tsv'), quote = F, row.names = F, sep = '\t')
 
 # combining all taxonomy systems for NR database into a single dataframe
 taxCombined <- taxRep %>%
@@ -371,7 +376,7 @@ taxCombined <- taxRep %>%
   arrange(OperonID)
 
 taxCombined %>%
-  write.table('Outputs_Combined/taxCombined.tsv', quote = F, row.names = F, sep = '\t')
+  write.table(paste0('Outputs_Combined/taxCombined_gtdb_', pid, '.tsv'), quote = F, row.names = F, sep = '\t')
 
 ### NOW EXTRACTING TAXONOMY INFO FOR OPERONS IN THE COMPLETE DATABASE
 
@@ -380,16 +385,16 @@ complete_taxCombined <- taxCombined %>%
   arrange(OperonID)
 
 complete_taxCombined %>%
-  write.table('Outputs_Complete/taxCombined.tsv', quote = F, row.names = F, sep = '\t')
+  write.table(paste0('Outputs_Complete/taxCombine_gtdbd_', pid, '.tsv'), quote = F, row.names = F, sep = '\t')
 
 complete_taxCombined %>%
   select(OperonID, taxRep) %>%
-  write.table('Outputs_Complete/taxRep.tsv', quote = F, row.names = F, col.names = F, sep = '\t')
+  write.table(paste0('Outputs_Complete/taxRep_gtdb_', pid, '.tsv'), quote = F, row.names = F, col.names = F, sep = '\t')
 complete_taxCombined %>%
   select(OperonID, taxLCA) %>%
-  write.table('Outputs_Complete/taxLCA.tsv', quote = F, row.names = F, col.names = F, sep = '\t')
+  write.table(paste0('Outputs_Complete/taxLCA_gtdb_', pid, '.tsv'), quote = F, row.names = F, col.names = F, sep = '\t')
 complete_taxCombined %>%
   select(OperonID, taxMaj) %>%
-  write.table('Outputs_Complete/taxMaj.tsv', quote = F, row.names = F, col.names = F, sep = '\t')
+  write.table(paste0('Outputs_Complete/taxMaj_gtdb_', pid, '.tsv'), quote = F, row.names = F, col.names = F, sep = '\t')
 
 
