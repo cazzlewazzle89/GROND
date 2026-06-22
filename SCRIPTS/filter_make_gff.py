@@ -27,7 +27,7 @@ def main():
     # Read GFF. GFF is tab-separated, 9 columns.
     cols = ['seqid', 'source', 'type', 'start', 'end', 'score', 'strand', 'phase', 'attributes']
     try:
-        df = pd.read_csv('combined_rrna.gff', sep='\t', comment='#', names=cols, header=None)
+        df = pd.read_csv('Outputs/combined_rrna.gff', sep='\t', comment='#', names=cols, header=None)
     except Exception as e:
         print(f"Error reading combined_rrna.gff: {e}", file=sys.stderr)
         sys.exit(1)
@@ -125,7 +125,7 @@ def main():
 
     # Read sequence lengths
     try:
-        seq_len_df = pd.read_csv('seq_length.tsv', sep='\t', header=None, names=['seqid', 'Sequence_Length'])
+        seq_len_df = pd.read_csv('Outputs/seq_length.tsv', sep='\t', header=None, names=['seqid', 'Sequence_Length'])
     except Exception as e:
         print(f"Error reading seq_length.tsv: {e}", file=sys.stderr)
         sys.exit(1)
@@ -151,7 +151,7 @@ def main():
 
     # Write unlinked/boundary-crossing operons to file
     unlinked_boundary = merged[(merged['CrossBoundary'] == True) | (merged['Linkage'] == 'Unlinked')]
-    unlinked_boundary.to_csv('operons_unlinked_or_crossingboundary.tsv', sep='\t', index=False)
+    unlinked_boundary.to_csv('Outputs/operons_unlinked_or_crossingboundary.tsv', sep='\t', index=False)
 
     # Filter for good operons
     good_operons = merged[(merged['CrossBoundary'] == False) & (merged['Linkage'] == 'Linked')].copy()
@@ -172,25 +172,11 @@ def main():
         good_operons['start_16S']
     )
 
-    # Write master_rrna.gff
     master_cols = [
         'seqid', 'OperonID', 'source', 'type', 'start_ITS', 'end_ITS',
         'start_16S', 'end_16S', 'start_23S', 'end_23S', 'score', 'strand', 'phase'
     ]
-    good_operons[master_cols].to_csv('master_rrna.gff', sep='\t', index=False)
-
-    # Write full_ITS.gff
-    its_gff = pd.DataFrame({
-        'seqid_operon': good_operons['seqid'] + ' ' + good_operons['OperonID'],
-        'source': good_operons['source'],
-        'type': good_operons['type'],
-        'start': good_operons['start_ITS'],
-        'end': good_operons['end_ITS'],
-        'score': good_operons['score'],
-        'strand': good_operons['strand'],
-        'phase': good_operons['phase']
-    })
-    its_gff.to_csv('full_ITS.gff', sep='\t', header=False, index=False)
+    good_operons[master_cols].to_csv('Outputs/master_rrna.tsv', sep='\t', index=False)
 
     # Helper to check if a seqid belongs to a complete genome
     def is_complete_seqid(seqid):
@@ -202,54 +188,47 @@ def main():
     operons_complete = good_operons[complete_mask].copy()
     operons_incomplete = good_operons[~complete_mask].copy()
 
-    # Write separate coordinate files for bedtools getfasta
+    # Write BED6 coordinate files for bedtools getfasta and identifiers lookup.
+    # BED uses 0-based start; GFF coordinates from barrnap are 1-based, so subtract 1.
+    # The OperonID is written as the BED name column (col 4) so that
+    # `bedtools getfasta -name` places it directly in the FASTA header.
     def write_subset_gffs(df, prefix):
         if len(df) == 0:
-            # Create empty files
-            open(f'operon_{prefix}.gff', 'w').close()
-            open(f'16S_{prefix}.gff', 'w').close()
-            open(f'23S_{prefix}.gff', 'w').close()
-            open(f'operon_identifiers_{prefix}.txt', 'w').close()
+            for fname in [
+                f'Outputs/operon_{prefix}.gff', f'Outputs/16S_{prefix}.gff',
+                f'Outputs/23S_{prefix}.gff', f'Outputs/operon_identifiers_{prefix}.txt',
+            ]:
+                with open(fname, 'w'): pass
             return
 
-        # Operons GFF
         pd.DataFrame({
             'seqid': df['seqid'],
-            'source': df['source'],
-            'type': df['type'],
-            'start': df['Operon_Start'],
+            'start': df['Operon_Start'] - 1,
             'end': df['Operon_End'],
+            'name': df['OperonID'],
             'score': df['score'],
             'strand': df['strand'],
-            'phase': df['phase']
-        }).to_csv(f'operon_{prefix}.gff', sep='\t', header=False, index=False)
+        }).to_csv(f'Outputs/operon_{prefix}.gff', sep='\t', header=False, index=False)
 
-        # 16S GFF
         pd.DataFrame({
             'seqid': df['seqid'],
-            'source': df['source'],
-            'type': df['type'],
-            'start': df[['start_16S', 'end_16S']].min(axis=1),
+            'start': df[['start_16S', 'end_16S']].min(axis=1) - 1,
             'end': df[['start_16S', 'end_16S']].max(axis=1),
+            'name': df['OperonID'],
             'score': df['score'],
             'strand': df['strand'],
-            'phase': df['phase']
-        }).to_csv(f'16S_{prefix}.gff', sep='\t', header=False, index=False)
+        }).to_csv(f'Outputs/16S_{prefix}.gff', sep='\t', header=False, index=False)
 
-        # 23S GFF
         pd.DataFrame({
             'seqid': df['seqid'],
-            'source': df['source'],
-            'type': df['type'],
-            'start': df[['start_23S', 'end_23S']].min(axis=1),
+            'start': df[['start_23S', 'end_23S']].min(axis=1) - 1,
             'end': df[['start_23S', 'end_23S']].max(axis=1),
+            'name': df['OperonID'],
             'score': df['score'],
             'strand': df['strand'],
-            'phase': df['phase']
-        }).to_csv(f'23S_{prefix}.gff', sep='\t', header=False, index=False)
+        }).to_csv(f'Outputs/23S_{prefix}.gff', sep='\t', header=False, index=False)
 
-        # Identifiers mapping file (col 1: seqid, col 2: OperonID)
-        df[['seqid', 'OperonID']].to_csv(f'operon_identifiers_{prefix}.txt', sep='\t', header=False, index=False)
+        df[['seqid', 'OperonID']].to_csv(f'Outputs/operon_identifiers_{prefix}.txt', sep='\t', header=False, index=False)
 
     write_subset_gffs(operons_complete, 'complete')
     write_subset_gffs(operons_incomplete, 'incomplete')

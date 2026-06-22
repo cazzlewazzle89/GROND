@@ -122,11 +122,11 @@ def main():
     tax_df = tax_df.rename(columns={'accession': 'Assembly', f'{scheme}_taxonomy': 'Taxonomy'})
     
     # --- Part A: Genome Length Stats ---
-    if not os.path.exists('seq_length.tsv'):
-        print("Error: seq_length.tsv not found.", file=sys.stderr)
+    if not os.path.exists('Outputs/seq_length.tsv'):
+        print("Error: Outputs/seq_length.tsv not found.", file=sys.stderr)
         sys.exit(1)
         
-    seq_len_df = pd.read_csv('seq_length.tsv', sep='\t', header=None, names=['Assembly__SeqID', 'Length'])
+    seq_len_df = pd.read_csv('Outputs/seq_length.tsv', sep='\t', header=None, names=['Assembly__SeqID', 'Length'])
     seq_len_df['Assembly'] = seq_len_df['Assembly__SeqID'].apply(lambda x: x.split('__')[0])
     
     genome_len_df = seq_len_df.groupby('Assembly')['Length'].sum().reset_index()
@@ -138,11 +138,11 @@ def main():
     stats_len.to_csv(f'stats_genomelength_{scheme}.tsv', sep='\t', index=False)
     
     # --- Part B: Copy Number Stats ---
-    if not os.path.exists('master_rrna.gff'):
-        print("Error: master_rrna.gff not found.", file=sys.stderr)
+    if not os.path.exists('Outputs/master_rrna.tsv'):
+        print("Error: Outputs/master_rrna.tsv not found.", file=sys.stderr)
         sys.exit(1)
         
-    master_rrna = pd.read_csv('master_rrna.gff', sep='\t')
+    master_rrna = pd.read_csv('Outputs/master_rrna.tsv', sep='\t')
     master_rrna['Assembly'] = master_rrna['seqid'].apply(lambda x: x.split('__')[0])
     
     copy_num_df = master_rrna.groupby('Assembly').size().reset_index(name='CopyNumber')

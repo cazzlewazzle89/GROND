@@ -25,25 +25,21 @@ def main():
     tax_df = tax_df.rename(columns={'accession': 'Assembly', f'{scheme}_taxonomy': 'Taxonomy'})
     tax_df['Taxonomy'] = tax_df['Taxonomy'].str.replace(';', '|')
     
-    # Load operon mappings from master_rrna.gff
-    if not os.path.exists('master_rrna.gff'):
-        print("Error: master_rrna.gff not found.", file=sys.stderr)
+    if not os.path.exists('Outputs/master_rrna.tsv'):
+        print("Error: Outputs/master_rrna.tsv not found.", file=sys.stderr)
         sys.exit(1)
         
-    combined_operons = pd.read_csv('master_rrna.gff', sep='\t')
+    combined_operons = pd.read_csv('Outputs/master_rrna.tsv', sep='\t')
     combined_operons = combined_operons[['seqid', 'OperonID']].copy()
     combined_operons['Assembly'] = combined_operons['seqid'].apply(lambda x: x.split('__')[0])
     
-    # Write taxFull file if it doesn't exist
-    tax_full_name = f'taxFull_{seq_type}_{scheme}.tsv'
-    if not os.path.exists(tax_full_name):
-        tax_full = pd.merge(combined_operons, tax_df, on='Assembly', how='left')
-        tax_full = tax_full[['OperonID', 'Taxonomy']].sort_values(by='OperonID')
-        tax_full.to_csv(tax_full_name, sep='\t', header=False, index=False)
+    tax_full = pd.merge(combined_operons, tax_df, on='Assembly', how='left')
+    tax_full = tax_full[['OperonID', 'Taxonomy']].sort_values(by='OperonID')
+    tax_full.to_csv(f'Outputs/taxFull_{seq_type}_{scheme}.tsv', sep='\t', header=False, index=False)
     
     # Load vsearch outputs
-    centroids_file = f'vsearch_centroids_{seq_type}_{pid}.tsv'
-    hits_file = f'vsearch_hits_{seq_type}_{pid}.tsv'
+    centroids_file = f'Outputs/vsearch_centroids_{seq_type}_{pid}.tsv'
+    hits_file = f'Outputs/vsearch_hits_{seq_type}_{pid}.tsv'
     
     if not os.path.exists(centroids_file):
         print(f"Centroids file {centroids_file} not found. Skipping.")
@@ -94,7 +90,7 @@ def main():
     # --- 1. taxRep ---
     tax_rep_df = pd.merge(centroids_mapped[['ClusterID', 'OperonID', 'Assembly']], tax_df[['Assembly', 'Taxonomy']], on='Assembly', how='left')
     tax_rep_df = tax_rep_df[['OperonID', 'Taxonomy']].sort_values(by='OperonID')
-    tax_rep_df.to_csv(f'taxRep_{seq_type}_{scheme}_{pid}.tsv', sep='\t', header=False, index=False)
+    tax_rep_df.to_csv(f'Outputs/taxRep_{seq_type}_{scheme}_{pid}.tsv', sep='\t', header=False, index=False)
     
     # --- 2. taxLCA ---
     lca_records = []
@@ -121,14 +117,14 @@ def main():
     rank_summary = tax_lca['LCA_Rank'].value_counts().reset_index()
     rank_summary.columns = ['LCA_Rank', 'Count']
     rank_summary['Percentage'] = 100 * rank_summary['Count'] / rank_summary['Count'].sum()
-    rank_summary.to_csv(f'taxLCA_{seq_type}_{scheme}_{pid}_ranksummary.tsv', sep='\t', index=False)
+    rank_summary.to_csv(f'Outputs/taxLCA_{seq_type}_{scheme}_{pid}_ranksummary.tsv', sep='\t', index=False)
     
     def join_ranks(row):
         return '|'.join([row[r] for r in ranks])
         
     tax_lca['Taxonomy'] = tax_lca.apply(join_ranks, axis=1)
     tax_lca_out = tax_lca[['OperonID', 'Taxonomy']].sort_values(by='OperonID')
-    tax_lca_out.to_csv(f'taxLCA_{seq_type}_{scheme}_{pid}.tsv', sep='\t', header=False, index=False)
+    tax_lca_out.to_csv(f'Outputs/taxLCA_{seq_type}_{scheme}_{pid}.tsv', sep='\t', header=False, index=False)
     
     # --- 3. taxMaj ---
     maj_records = []
@@ -167,7 +163,7 @@ def main():
         
     tax_maj['Taxonomy'] = tax_maj['Taxonomy'].apply(clean_maj_taxonomy)
     tax_maj_out = tax_maj[['OperonID', 'Taxonomy']].sort_values(by='OperonID')
-    tax_maj_out.to_csv(f'taxMaj_{seq_type}_{scheme}_{pid}.tsv', sep='\t', header=False, index=False)
+    tax_maj_out.to_csv(f'Outputs/taxMaj_{seq_type}_{scheme}_{pid}.tsv', sep='\t', header=False, index=False)
 
 if __name__ == '__main__':
     main()

@@ -15,8 +15,8 @@ else
     MANIFEST_FILE="${PWD}/$1"
 fi
 
-VAR_THREADS_SEQLENGTH=4
-VAR_THREADS_VSEARCH=4
+VAR_THREADS_SEQLENGTH=24
+VAR_THREADS_VSEARCH=24
 VAR_OUTPUT_DIRECTORY=R232
 VAR_TEMP_DIRECTORY=${PWD}/TEMP
 
@@ -97,6 +97,7 @@ for type in operon 16S 23S; do
                 -fi Outputs/combined.fna \
                 -bed Outputs/${type}_${comp}.gff \
                 -fo Outputs/${type}_${comp}.fna \
+                -name \
                 -s
             python3 ${VAR_SOURCE_DIRECTORY}/SCRIPTS/replace_headers.py \
                 Outputs/${type}_${comp}.fna \
@@ -241,7 +242,7 @@ cp stats_copynumber_gtdb.tsv Database/stats_copynumber_gtdb.tsv
 cp stats_copynumber_ncbi.tsv Database/stats_copynumber_ncbi.tsv
 
 echo "Copying master GFF to Database..."
-cp Outputs/master_rrna.gff Database/master_rrna.gff
+cp Outputs/master_rrna.tsv Database/master_rrna.tsv
 
 # Move database to source directory under output directory name
 mkdir -p ${VAR_SOURCE_DIRECTORY}/${VAR_OUTPUT_DIRECTORY}
