@@ -17,13 +17,13 @@ I plan to update the database in line with each major GTDB release.
 If I am behind the times and don't have a database for the latest GTDB release then let me know by posting an issue.
 
 ## Quick Links
-[Database Download](#database-download)
-[Database Contents](#database-contents)
-[Dependencies](#dependencies-for-database-construction)
-[Preparing the Manifest](#preparing-the-manifest)
-[Usage](#usage)
-[Note on Database Construction](#note-on-database-construction)
-[Note on Naming](#note-on-naming)
+[Database Download](#database-download)  
+[Database Contents](#database-contents)  
+[Dependencies](#dependencies-for-database-construction)  
+[Preparing the Manifest](#preparing-the-manifest)  
+[Usage](#usage)  
+[Note on Database Construction](#note-on-database-construction)  
+[Note on Naming](#note-on-naming)  
 
 ## Database Download
 
@@ -164,7 +164,7 @@ The script will:
    - Incomplete genome sequences are then added and a second clustering pass is run using `--usersort` to maintain priority.
 6. Assign taxonomy (taxRep, taxLCA, taxMaj) for each database using both GTDB and NCBI schemes.
 7. Calculate per-taxon genome size and rRNA copy number statistics.
-8. Collect all output files into the `R232/` directory (configurable via `VAR_OUTPUT_DIRECTORY`).
+8. Collect all output files into the output directory (configurable via `VAR_OUTPUT_DIRECTORY`).
 
 ### Configurable Variables
 
