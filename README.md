@@ -17,13 +17,13 @@ I plan to update the database in line with each major GTDB release.
 If I am behind the times and don't have a database for the latest GTDB release then let me know by posting an issue.
 
 ## Quick Links
-[Database Download](#database-download)  
-[Database Contents](#database-contents)  
-[Dependencies](#dependencies-for-database-construction)  
-[Preparing the Manifest](#preparing-the-manifest)  
-[Usage](#usage)  
-[Note on Database Construction](#note-on-database-construction)  
-[Note on Naming](#note-on-naming)  
+- [Database Download](#database-download)  
+- [Database Contents](#database-contents)  
+- [Dependencies](#dependencies-for-database-construction)  
+- [Preparing the Manifest](#preparing-the-manifest)  
+- [Usage](#usage)  
+- [Note on Database Construction](#note-on-database-construction)  
+- [Note on Naming](#note-on-naming)  
 
 ## Database Download
 
