@@ -81,7 +81,7 @@ A `taxFull` file is also provided mapping every sequence in the 100% dereplicate
 
 | File | Description |
 | --- | --- |
-| `master_rrna.gff` | Full coordinate table for every identified rRNA operon — includes seqid, OperonID, strand, and positions of the 16S gene, ITS region, and 23S gene |
+| `master_rrna.tsv` | Full coordinate table for every identified rRNA operon — includes seqid, OperonID, strand, and positions of the 16S gene, ITS region, and 23S gene |
 | `stats_genomelength_gtdb.tsv` | Mean/median genome size per taxon (GTDB) |
 | `stats_genomelength_ncbi.tsv` | Mean/median genome size per taxon (NCBI) |
 | `stats_copynumber_gtdb.tsv` | Mean/median rrn copy number per taxon (GTDB) |
@@ -103,7 +103,7 @@ Make sure these are in your `$PATH`. The conda environment can be created using 
 
 ### Python Requirements
 
-Python 3.8+ with the following packages:
+Python 3.9+ with the following packages:
 
 | Package | Notes |
 | --- | --- |
@@ -186,7 +186,7 @@ Edit the variables at the top of `grond.sh` to adjust:
 | `get_taxonomy.py` | Python | Taxonomy assignment (taxRep, taxLCA, taxMaj) for all sequence types and thresholds |
 | `get_genome_stats.py` | Python | Per-taxon genome size and rRNA copy number statistics |
 | `replace_headers.py` | Python | FASTA header replacement with unique operon/gene IDs |
-| `tidy_largefiles.sh` | Bash | Removes large intermediate files after a completed run |
+| `tidy_largefiles.sh` | Bash | Removes the TEMP working directory left behind by an aborted or interrupted run |
 
 ## Note on Database Construction
 
