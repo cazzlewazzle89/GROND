@@ -20,7 +20,7 @@ VAR_THREADS_VSEARCH=24
 VAR_OUTPUT_DIRECTORY=R232
 VAR_TEMP_DIRECTORY=${PWD}/TEMP
 
-VAR_SOURCE_DIRECTORY=${PWD}
+VAR_SOURCE_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # Create temp directory and output directory structure
 mkdir -p ${VAR_TEMP_DIRECTORY}/Outputs
