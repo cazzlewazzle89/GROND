@@ -18,6 +18,7 @@ fi
 VAR_THREADS_SEQLENGTH=24
 VAR_THREADS_VSEARCH=24
 VAR_OUTPUT_DIRECTORY=R232
+VAR_WORKING_DIRECTORY=${PWD}
 VAR_TEMP_DIRECTORY=${PWD}/TEMP
 
 VAR_SOURCE_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -47,12 +48,12 @@ while IFS=$'\t' read -r genomeID path_to_fna path_to_gff gtdb_taxonomy ncbi_taxo
         continue
     fi
     
-    # Resolve relative paths
+    # Resolve relative paths against the invocation directory, not the software directory
     if [[ ! "$path_to_fna" = /* ]]; then
-        path_to_fna="${VAR_SOURCE_DIRECTORY}/${path_to_fna}"
+        path_to_fna="${VAR_WORKING_DIRECTORY}/${path_to_fna}"
     fi
     if [[ ! "$path_to_gff" = /* ]]; then
-        path_to_gff="${VAR_SOURCE_DIRECTORY}/${path_to_gff}"
+        path_to_gff="${VAR_WORKING_DIRECTORY}/${path_to_gff}"
     fi
     
     missing=0
@@ -247,11 +248,10 @@ echo "Copying master GFF to Database..."
 cp Outputs/master_rrna.tsv Database/master_rrna.tsv
 
 # Move database to source directory under output directory name
-mkdir -p ${VAR_SOURCE_DIRECTORY}/${VAR_OUTPUT_DIRECTORY}
-cp -r Database/* ${VAR_SOURCE_DIRECTORY}/${VAR_OUTPUT_DIRECTORY}/
+mkdir -p ${VAR_OUTPUT_DIRECTORY}
+cp -r Database/* ${VAR_OUTPUT_DIRECTORY}/
 
 # Cleanup temp directory
-cd ${VAR_SOURCE_DIRECTORY}
 rm -rf ${VAR_TEMP_DIRECTORY}
 
 echo "GROND build completed successfully."

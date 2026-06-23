@@ -24,7 +24,9 @@ def main():
         for line in infile:
             if line.startswith('>'):
                 raw = line[1:].strip()
-                operon_id = strand_suffix.sub('', raw)
+                # bedtools getfasta -name -s appends ::seqid:start-end(strand)
+                operon_id = raw.split('::')[0]
+                operon_id = strand_suffix.sub('', operon_id)
                 if operon_id not in valid_ids:
                     print(f"Warning: '{operon_id}' not found in identifiers file.", file=sys.stderr)
                 outfile.write(f'>{operon_id}\n')
