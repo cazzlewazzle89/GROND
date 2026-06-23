@@ -71,7 +71,7 @@ while IFS=$'\t' read -r genomeID path_to_fna path_to_gff gtdb_taxonomy ncbi_taxo
         gunzip -c "$path_to_fna"
     else
         cat "$path_to_fna"
-    fi | sed "s/^>/${genomeID}__/ ; s/ .*//" >> Outputs/combined.fna
+    fi | sed "s/^>/>${genomeID}__/ ; s/ .*//" >> Outputs/combined.fna
     
     # 2. Edit GFF seqid column to contain the genome ID
     if [[ "$path_to_gff" == *.gz ]]; then
