@@ -247,9 +247,9 @@ cp stats_copynumber_ncbi.tsv Database/stats_copynumber_ncbi.tsv
 echo "Copying master GFF to Database..."
 cp Outputs/master_rrna.tsv Database/master_rrna.tsv
 
-# Move database to source directory under output directory name
-mkdir -p ${VAR_OUTPUT_DIRECTORY}
-cp -r Database/* ${VAR_OUTPUT_DIRECTORY}/
+# Copy database to output directory (relative to invocation directory, outside TEMP)
+mkdir -p ${VAR_WORKING_DIRECTORY}/${VAR_OUTPUT_DIRECTORY}
+cp -r Database/* ${VAR_WORKING_DIRECTORY}/${VAR_OUTPUT_DIRECTORY}/
 
 # Cleanup temp directory
 rm -rf ${VAR_TEMP_DIRECTORY}
