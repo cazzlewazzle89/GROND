@@ -62,7 +62,17 @@ def main():
     # Map query sequence (column index 8) to Assembly via OperonID
     centroids_mapped = pd.merge(centroids[[1, 8]], combined_operons[['OperonID', 'Assembly']], left_on=8, right_on='OperonID')
     centroids_mapped = centroids_mapped.rename(columns={1: 'ClusterID'})
-    
+
+    if len(centroids_mapped) == 0:
+        print(f"WARNING [{seq_type}/{pid}]: No OperonIDs in {centroids_file} matched master_rrna.tsv. Writing empty outputs.")
+        print(f"  Sample centroid labels (col 8): {centroids[8].head(3).tolist()}", file=sys.stderr)
+        print(f"  Sample master OperonIDs:        {combined_operons['OperonID'].head(3).tolist()}", file=sys.stderr)
+        for suffix in [f'taxRep_{seq_type}_{scheme}_{pid}.tsv',
+                       f'taxLCA_{seq_type}_{scheme}_{pid}.tsv',
+                       f'taxMaj_{seq_type}_{scheme}_{pid}.tsv']:
+            open(f'Outputs/{suffix}', 'w').close()
+        sys.exit(0)
+
     if len(hits) > 0:
         hits_mapped = pd.merge(hits[[1, 8]], combined_operons[['OperonID', 'Assembly']], left_on=8, right_on='OperonID')
         hits_mapped = hits_mapped.rename(columns={1: 'ClusterID'})
@@ -110,7 +120,11 @@ def main():
             **{rank: consensus_taxonomy[idx] for idx, rank in enumerate(ranks)}
         })
         
-    lca_df = pd.DataFrame(lca_records)
+    if not lca_records:
+        print(f"WARNING [{seq_type}/{pid}]: lca_records is empty — vsearch_tax may have no valid ClusterID values.", file=sys.stderr)
+        lca_df = pd.DataFrame(columns=['ClusterID', 'LCA_Rank'] + ranks)
+    else:
+        lca_df = pd.DataFrame(lca_records)
     tax_lca = pd.merge(lca_df, centroids_mapped[['ClusterID', 'OperonID']], on='ClusterID')
     
     # LCA rank summary
@@ -146,7 +160,7 @@ def main():
             'Taxonomy': '|'.join(maj_taxonomy)
         })
         
-    maj_df = pd.DataFrame(maj_records)
+    maj_df = pd.DataFrame(maj_records) if maj_records else pd.DataFrame(columns=['ClusterID', 'Taxonomy'])
     tax_maj = pd.merge(maj_df, centroids_mapped[['ClusterID', 'OperonID']], on='ClusterID')
     
     def clean_maj_taxonomy(tax_str):
