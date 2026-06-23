@@ -55,14 +55,16 @@ while IFS=$'\t' read -r genomeID path_to_fna path_to_gff gtdb_taxonomy ncbi_taxo
         path_to_gff="${VAR_SOURCE_DIRECTORY}/${path_to_gff}"
     fi
     
+    missing=0
     if [ ! -f "$path_to_fna" ]; then
-        echo "Error: Assembly FASTA file not found: $path_to_fna"
-        exit 1
+        echo "WARNING: Skipping ${genomeID} — FASTA file not found: $path_to_fna"
+        missing=1
     fi
     if [ ! -f "$path_to_gff" ]; then
-        echo "Error: GFF file not found: $path_to_gff"
-        exit 1
+        echo "WARNING: Skipping ${genomeID} — GFF file not found: $path_to_gff"
+        missing=1
     fi
+    [ "$missing" -eq 1 ] && continue
     
     # 1. Edit fasta headers to contain the genome ID
     if [[ "$path_to_fna" == *.gz ]]; then
@@ -86,7 +88,7 @@ done < "$MANIFEST_FILE"
 echo "Calculating sequence lengths with seqkit..."
 seqkit fx2tab Outputs/combined.fna -n -l -j ${VAR_THREADS_SEQLENGTH} > Outputs/seq_length.tsv
 
-echo "Running R-to-Python GFF filtering and coordinate extraction..."
+echo "Running GFF filtering and coordinate extraction..."
 python3 ${VAR_SOURCE_DIRECTORY}/SCRIPTS/filter_make_gff.py "$MANIFEST_FILE"
 
 echo "Extracting and sorting fasta sequences..."
