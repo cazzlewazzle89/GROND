@@ -164,11 +164,11 @@ run_clustering() {
     if [ "$type" = "operon" ]; then
         sortbyname.sh \
             in=Outputs/vsearch_centroids_${type}_${pid}.fna \
-            out=Database/nrRep_${pid}.fna.gz
+            out=Database/operon_nrRep_${pid}.fna.gz
         if [ -f Outputs/vsearch_consensus_${type}_${pid}.fna ]; then
             sortbyname.sh \
                 in=Outputs/vsearch_consensus_${type}_${pid}.fna \
-                out=Database/nrCon_${pid}.fna.gz
+                out=Database/operon_nrCon_${pid}.fna.gz
         fi
     else
         sortbyname.sh \
@@ -187,13 +187,13 @@ run_clustering() {
     
     # Copy taxonomy outputs to Database/
     if [ "$type" = "operon" ]; then
-        cp Outputs/taxRep_operon_gtdb_${pid}.tsv Database/taxRep_gtdb_${pid}.tsv
-        cp Outputs/taxLCA_operon_gtdb_${pid}.tsv Database/taxLCA_gtdb_${pid}.tsv
-        cp Outputs/taxMaj_operon_gtdb_${pid}.tsv Database/taxMaj_gtdb_${pid}.tsv
-        
-        cp Outputs/taxRep_operon_ncbi_${pid}.tsv Database/taxRep_ncbi_${pid}.tsv
-        cp Outputs/taxLCA_operon_ncbi_${pid}.tsv Database/taxLCA_ncbi_${pid}.tsv
-        cp Outputs/taxMaj_operon_ncbi_${pid}.tsv Database/taxMaj_ncbi_${pid}.tsv
+        cp Outputs/taxRep_operon_gtdb_${pid}.tsv Database/operon_taxRep_gtdb_${pid}.tsv
+        cp Outputs/taxLCA_operon_gtdb_${pid}.tsv Database/operon_taxLCA_gtdb_${pid}.tsv
+        cp Outputs/taxMaj_operon_gtdb_${pid}.tsv Database/operon_taxMaj_gtdb_${pid}.tsv
+
+        cp Outputs/taxRep_operon_ncbi_${pid}.tsv Database/operon_taxRep_ncbi_${pid}.tsv
+        cp Outputs/taxLCA_operon_ncbi_${pid}.tsv Database/operon_taxLCA_ncbi_${pid}.tsv
+        cp Outputs/taxMaj_operon_ncbi_${pid}.tsv Database/operon_taxMaj_ncbi_${pid}.tsv
     else
         cp Outputs/taxRep_${type}_gtdb_${pid}.tsv Database/${type}_taxRep_gtdb_${pid}.tsv
         cp Outputs/taxLCA_${type}_gtdb_${pid}.tsv Database/${type}_taxLCA_gtdb_${pid}.tsv
@@ -228,8 +228,8 @@ for pid in 1.0 0.99 0.98 0.97; do
 done
 
 echo "Copying taxFull files to Database..."
-cp Outputs/taxFull_operon_gtdb.tsv Database/taxFull_gtdb.tsv
-cp Outputs/taxFull_operon_ncbi.tsv Database/taxFull_ncbi.tsv
+cp Outputs/taxFull_operon_gtdb.tsv Database/operon_taxFull_gtdb.tsv
+cp Outputs/taxFull_operon_ncbi.tsv Database/operon_taxFull_ncbi.tsv
 cp Outputs/taxFull_16S_gtdb.tsv Database/16S_taxFull_gtdb.tsv
 cp Outputs/taxFull_16S_ncbi.tsv Database/16S_taxFull_ncbi.tsv
 cp Outputs/taxFull_23S_gtdb.tsv Database/23S_taxFull_gtdb.tsv

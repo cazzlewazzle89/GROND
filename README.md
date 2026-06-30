@@ -1,4 +1,5 @@
 # GROND: Genome-derived Ribosomal OperoN Database
+![Zenodo Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fzenodo.org%2Fapi%2Frecords%2F17704151&label=downloads&query=%24.stats.downloads&color=blue) 
 ### A quality-checked and publicly available database of full-length 16S-ITS-23S rRNA operon sequences
 This repository makes available the scripts used to build the GROND databases described in the [manuscript](https://doi.org/10.1099/mgen.0.001255) and available for download [here](https://zenodo.org/records/17704151).
 
@@ -29,7 +30,7 @@ If I am behind the times and don't have a database for the latest GTDB release t
 
 The database is hosted on Zenodo so downloading each file individually is relatively simple.
 The simplest method is to use `wget` or `curl` to target the URL of each file, minus the `?download=1` suffix.
-For example, you would use `wget https://zenodo.org/records/17704151/files/nrRep_1.0.fna.gz` to download the 100% identity dereplicated operon database.
+For example, you would use `wget https://zenodo.org/records/17704151/files/operon_nrRep_1.0.fna.gz` to download the 100% identity dereplicated operon database.
 
 ## Database Contents
 
@@ -39,31 +40,33 @@ All databases are named by sequence type and percent-identity (PID) threshold us
 
 | File | PID Threshold | Description |
 | --- | --- | --- |
-| `nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique operons |
-| `nrRep_0.999.fna.gz` | 99.9% | Representative sequences |
-| `nrRep_0.99.fna.gz` | 99% | Representative sequences |
-| `nrRep_0.97.fna.gz` | 97% | Representative sequences |
-| `nrRep_0.95.fna.gz` | 95% | Representative sequences |
-| `nrRep_0.90.fna.gz` | 90% | Representative sequences |
-| `nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster |
+| `operon_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique operons |
+| `operon_nrRep_0.999.fna.gz` | 99.9% | Representative sequences |
+| `operon_nrRep_0.99.fna.gz` | 99% | Representative sequences |
+| `operon_nrRep_0.97.fna.gz` | 97% | Representative sequences |
+| `operon_nrRep_0.95.fna.gz` | 95% | Representative sequences |
+| `operon_nrRep_0.90.fna.gz` | 90% | Representative sequences |
+| `operon_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster |
 
 ### 16S rRNA Databases
 
-| File | PID Threshold |
-| --- | --- |
-| `16S_nrRep_1.0.fna.gz` | 100% |
-| `16S_nrRep_0.99.fna.gz` | 99% |
-| `16S_nrRep_0.98.fna.gz` | 98% |
-| `16S_nrRep_0.97.fna.gz` | 97% |
+| File | PID Threshold | Description |
+| --- | --- | --- |
+| `16S_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique genes |
+| `16S_nrRep_0.99.fna.gz` | 99% | Representative sequences |
+| `16S_nrRep_0.98.fna.gz` | 98% | Representative sequences |
+| `16S_nrRep_0.97.fna.gz` | 97% | Representative sequences |
+| `16S_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster |
 
 ### 23S rRNA Databases
 
-| File | PID Threshold |
-| --- | --- |
-| `23S_nrRep_1.0.fna.gz` | 100% |
-| `23S_nrRep_0.99.fna.gz` | 99% |
-| `23S_nrRep_0.98.fna.gz` | 98% |
-| `23S_nrRep_0.97.fna.gz` | 97% |
+| File | PID Threshold | Description |
+| --- | --- | --- |
+| `23S_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique genes |
+| `23S_nrRep_0.99.fna.gz` | 99% | Representative sequences |
+| `23S_nrRep_0.98.fna.gz` | 98% | Representative sequences |
+| `23S_nrRep_0.97.fna.gz` | 97% | Representative sequences |
+| `23S_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster |
 
 ### Taxonomy Files
 
@@ -75,7 +78,7 @@ For each dereplication threshold and each sequence type, three taxonomy assignme
 | `taxLCA` | Lowest Common Ancestor of all sequences in the cluster |
 | `taxMaj` | Lowest rank with a single majority agreement across all sequences in the cluster |
 
-A `taxFull` file is also provided mapping every sequence in the 100% dereplicated database to its source genome taxonomy.
+A `taxFull` file is also provided mapping every sequence in the source dataset to its source genome taxonomy.
 
 ### Supplementary Statistics
 
@@ -95,7 +98,7 @@ Make sure these are in your `$PATH`. The conda environment can be created using 
 
 | Software | Version Tested | Notes |
 | --- | --- | --- |
-| [BBTools](https://jgi.doe.gov/data-and-tools/bbtools/) | 38.90 | Used for `sortbyname.sh` |
+| [BBTools](https://jgi.doe.gov/data-and-tools/bbtools/) (conda: `bbmap`) | 38.90 | Used for `sortbyname.sh` |
 | [BEDTools](https://github.com/arq5x/bedtools2) | 2.30.0 | Used for sequence extraction |
 | [Barrnap](https://github.com/tseemann/barrnap) | 0.9 | Run externally; output GFF paths supplied via manifest |
 | [SeqKit](https://github.com/shenwei356/seqkit) | 2.2.0 | Used for sequence length calculation |
