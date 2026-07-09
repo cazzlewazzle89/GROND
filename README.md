@@ -1,7 +1,7 @@
 # GROND: Genome-derived Ribosomal OperoN Database
 ![Zenodo Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fzenodo.org%2Fapi%2Frecords%2F17704151&label=downloads&query=%24.stats.downloads&color=blue) 
 ### A quality-checked and publicly available database of full-length 16S-ITS-23S rRNA operon sequences
-This repository makes available the scripts used to build the GROND databases described in the [manuscript](https://doi.org/10.1099/mgen.0.001255) and available for download [here](https://zenodo.org/records/17704151).
+This repository makes available the scripts used to build the GROND databases described in the [manuscript](https://doi.org/10.1099/mgen.0.001255) and available for download [here](https://zenodo.org/records/21278902).
 
 For a more in-depth comparison of 16S-ITS-23S analysis methods, see our [publication](https://www.nature.com/articles/s41598-024-83410-7) in Scientific Reports.
 
@@ -38,35 +38,35 @@ All databases are named by sequence type and percent-identity (PID) threshold us
 
 ### rRNA Operon (16S-ITS-23S) Databases
 
-| File | PID Threshold | Description |
-| --- | --- | --- |
-| `operon_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique operons |
-| `operon_nrRep_0.999.fna.gz` | 99.9% | Representative sequences |
-| `operon_nrRep_0.99.fna.gz` | 99% | Representative sequences |
-| `operon_nrRep_0.97.fna.gz` | 97% | Representative sequences |
-| `operon_nrRep_0.95.fna.gz` | 95% | Representative sequences |
-| `operon_nrRep_0.90.fna.gz` | 90% | Representative sequences |
-| `operon_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster |
+| File | PID Threshold | Description | Sequence Count |
+| --- | --- | --- | --- |
+| `operon_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique operons | 361,183 |
+| `operon_nrRep_0.999.fna.gz` | 99.9% | Representative sequences | 240,583 |
+| `operon_nrRep_0.99.fna.gz` | 99% | Representative sequences | 90,986 |
+| `operon_nrRep_0.97.fna.gz` | 97% | Representative sequences | 53,076 |
+| `operon_nrRep_0.95.fna.gz` | 95% | Representative sequences | 36,688 |
+| `operon_nrRep_0.90.fna.gz` | 90% | Representative sequences | 17,547 |
+| `operon_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster | * |
 
 ### 16S rRNA Databases
 
-| File | PID Threshold | Description |
-| --- | --- | --- |
-| `16S_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique genes |
-| `16S_nrRep_0.99.fna.gz` | 99% | Representative sequences |
-| `16S_nrRep_0.98.fna.gz` | 98% | Representative sequences |
-| `16S_nrRep_0.97.fna.gz` | 97% | Representative sequences |
-| `16S_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster |
+| File | PID Threshold | Description | Sequence Count |
+| --- | --- | --- | --- |
+| `16S_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique genes | 174,303 |
+| `16S_nrRep_0.99.fna.gz` | 99% | Representative sequences | 46,449 |
+| `16S_nrRep_0.98.fna.gz` | 98% | Representative sequences | 32,035 |
+| `16S_nrRep_0.97.fna.gz` | 97% | Representative sequences | 24,254 |
+| `16S_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster | * |
 
 ### 23S rRNA Databases
 
-| File | PID Threshold | Description |
-| --- | --- | --- |
-| `23S_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique genes |
-| `23S_nrRep_0.99.fna.gz` | 99% | Representative sequences |
-| `23S_nrRep_0.98.fna.gz` | 98% | Representative sequences |
-| `23S_nrRep_0.97.fna.gz` | 97% | Representative sequences |
-| `23S_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster |
+| File | PID Threshold | Description | Sequence Count |
+| --- | --- | --- | --- |
+| `23S_nrRep_1.0.fna.gz` | 100% | Representative sequences - all unique genes | 253,485 |
+| `23S_nrRep_0.99.fna.gz` | 99% | Representative sequences | 56,680 |
+| `23S_nrRep_0.98.fna.gz` | 98% | Representative sequences | 41,016 |
+| `23S_nrRep_0.97.fna.gz` | 97% | Representative sequences | 32,347 |
+| `23S_nrCon_*.fna.gz` | (same thresholds) | Consensus sequences for each cluster | * |
 
 ### Taxonomy Files
 
