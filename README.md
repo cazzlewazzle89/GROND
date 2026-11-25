@@ -80,6 +80,12 @@ For each dereplication threshold and each sequence type, three taxonomy assignme
 
 A `taxFull` file is also provided mapping every sequence in the source dataset to its source genome taxonomy.
 
+### Cluster Membership Files
+
+| File | Description |
+| --- | --- |
+| `operon_clusterMap.tsv`, `16S_clusterMap.tsv`, `23S_clusterMap.tsv` | Every sequence in the full (pre-dereplication) dataset, whether it came from a complete or incomplete genome (`Source`), and the OperonID of its representative sequence in the `nrRep` database at each threshold (`Rep_<pid>` columns) |
+
 ### Supplementary Statistics
 
 | File | Description |
@@ -179,6 +185,7 @@ Edit the variables at the top of `grond.sh` to adjust:
 | `VAR_THREADS_VSEARCH` | 24 | Threads for VSEARCH clustering |
 | `VAR_OUTPUT_DIRECTORY` | `R232` | Output directory name |
 | `VAR_TEMP_DIRECTORY` | `${PWD}/TEMP` | Temporary working directory |
+| `VAR_ALLOW_MISSING` | 0 | If 0, abort when any manifest genome has a missing FASTA/GFF file (listed in `skipped_genomes.tsv`); set to 1 to continue without them |
 
 ## Scripts
 

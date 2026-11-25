@@ -20,6 +20,9 @@ VAR_THREADS_VSEARCH=24
 VAR_OUTPUT_DIRECTORY=R232
 VAR_WORKING_DIRECTORY=${PWD}
 VAR_TEMP_DIRECTORY=${PWD}/TEMP
+# Set to 1 to continue the build when manifest genomes have missing FASTA/GFF files
+VAR_ALLOW_MISSING=0
+VAR_SKIPPED_FILE=${PWD}/skipped_genomes.tsv
 
 VAR_SOURCE_DIRECTORY="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
@@ -33,6 +36,9 @@ echo "Parsing manifest file..."
 cat /dev/null > Outputs/combined.fna
 cat /dev/null > Outputs/combined_rrna.gff
 echo -e "accession\tgtdb_taxonomy\tncbi_taxonomy" > taxonomy.tsv
+echo -e "genomeID\tgtdb_taxonomy\tmissing_file" > ${VAR_SKIPPED_FILE}
+n_included=0
+n_skipped=0
 
 # Read manifest.tsv line by line, skipping header
 while IFS=$'\t' read -r genomeID path_to_fna path_to_gff gtdb_taxonomy ncbi_taxonomy genome_completeness || [ -n "$genomeID" ]; do
@@ -59,13 +65,19 @@ while IFS=$'\t' read -r genomeID path_to_fna path_to_gff gtdb_taxonomy ncbi_taxo
     missing=0
     if [ ! -f "$path_to_fna" ]; then
         echo "WARNING: Skipping ${genomeID} — FASTA file not found: $path_to_fna"
+        echo -e "${genomeID}\t${gtdb_taxonomy}\t${path_to_fna}" >> ${VAR_SKIPPED_FILE}
         missing=1
     fi
     if [ ! -f "$path_to_gff" ]; then
         echo "WARNING: Skipping ${genomeID} — GFF file not found: $path_to_gff"
+        echo -e "${genomeID}\t${gtdb_taxonomy}\t${path_to_gff}" >> ${VAR_SKIPPED_FILE}
         missing=1
     fi
-    [ "$missing" -eq 1 ] && continue
+    if [ "$missing" -eq 1 ]; then
+        n_skipped=$((n_skipped + 1))
+        continue
+    fi
+    n_included=$((n_included + 1))
     
     # 1. Edit fasta headers to contain the genome ID
     if [[ "$path_to_fna" == *.gz ]]; then
@@ -85,6 +97,20 @@ while IFS=$'\t' read -r genomeID path_to_fna path_to_gff gtdb_taxonomy ncbi_taxo
     echo -e "${genomeID}\t${gtdb_taxonomy}\t${ncbi_taxonomy}" >> taxonomy.tsv
 
 done < "$MANIFEST_FILE"
+
+echo "Manifest parsed: ${n_included} genomes included, ${n_skipped} skipped due to missing files."
+if [ "$n_skipped" -gt 0 ]; then
+    echo "Skipped genomes by GTDB species (top 10):"
+    tail -n +2 ${VAR_SKIPPED_FILE} | cut -f1,2 | sort -u | awk -F'\t' '{n=split($2,a,";"); print a[n]}' | sort | uniq -c | sort -rn | head -10
+    echo "Full list written to ${VAR_SKIPPED_FILE}"
+    if [ "$VAR_ALLOW_MISSING" -ne 1 ]; then
+        echo "ERROR: Aborting build. Fix the manifest paths, or set VAR_ALLOW_MISSING=1 to continue without these genomes." >&2
+        echo "Run SCRIPTS/tidy_largefiles.sh to remove the TEMP directory." >&2
+        exit 1
+    fi
+else
+    rm -f ${VAR_SKIPPED_FILE}
+fi
 
 echo "Calculating sequence lengths with seqkit..."
 seqkit fx2tab Outputs/combined.fna -n -l -j ${VAR_THREADS_SEQLENGTH} > Outputs/seq_length.tsv
@@ -212,20 +238,30 @@ run_clustering() {
     rm -f Outputs/vsearch_consensus_${type}_${pid}.fna
 }
 
+PIDS_OPERON="1.0 0.999 0.99 0.97 0.95 0.90"
+PIDS_16S="1.0 0.99 0.98 0.97"
+PIDS_23S="1.0 0.99 0.98 0.97"
+
 # Run operon clustering
-for pid in 1.0 0.999 0.99 0.97 0.95 0.90; do
+for pid in ${PIDS_OPERON}; do
     run_clustering operon ${pid}
 done
 
 # Run 16S clustering
-for pid in 1.0 0.99 0.98 0.97; do
+for pid in ${PIDS_16S}; do
     run_clustering 16S ${pid}
 done
 
 # Run 23S clustering
-for pid in 1.0 0.99 0.98 0.97; do
+for pid in ${PIDS_23S}; do
     run_clustering 23S ${pid}
 done
+
+# Map every sequence in the full dataset to its representative at each threshold
+echo "Building sequence-to-representative cluster maps..."
+python3 ${VAR_SOURCE_DIRECTORY}/SCRIPTS/make_cluster_map.py operon Database/operon_clusterMap.tsv ${PIDS_OPERON}
+python3 ${VAR_SOURCE_DIRECTORY}/SCRIPTS/make_cluster_map.py 16S Database/16S_clusterMap.tsv ${PIDS_16S}
+python3 ${VAR_SOURCE_DIRECTORY}/SCRIPTS/make_cluster_map.py 23S Database/23S_clusterMap.tsv ${PIDS_23S}
 
 echo "Copying taxFull files to Database..."
 cp Outputs/taxFull_operon_gtdb.tsv Database/operon_taxFull_gtdb.tsv
@@ -255,3 +291,6 @@ cp -r Database/* ${VAR_WORKING_DIRECTORY}/${VAR_OUTPUT_DIRECTORY}/
 rm -rf ${VAR_TEMP_DIRECTORY}
 
 echo "GROND build completed successfully."
+if [ "$n_skipped" -gt 0 ]; then
+    echo "WARNING: ${n_skipped} manifest genomes were skipped due to missing files (see ${VAR_SKIPPED_FILE})."
+fi
