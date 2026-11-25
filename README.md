@@ -147,6 +147,17 @@ Barrnap should be run with `--reject 0.8` to be consistent with the published da
 barrnap --threads 24 --reject 0.8 genome.fna > genome_rrna.gff
 ```
 
+### Filling in Missing GFF Files
+
+If some manifest genomes have a FASTA assembly but no Barrnap GFF, `fill_missing_gff.sh` runs Barrnap on them (`--reject 0.8`, kingdom `arc` for GTDB `d__Archaea` genomes and `bac` otherwise), writes the GFFs to a local directory, and writes an updated manifest pointing at them. The input manifest is not modified, rows with a missing FASTA are left unchanged, and existing GFFs in the output directory are reused so interrupted runs can be resumed.
+
+```bash
+bash SCRIPTS/fill_missing_gff.sh -i manifest.tsv -o manifest_updated.tsv -d barrnap_gff -t 4 -j 6
+bash SCRIPTS/grond.sh manifest_updated.tsv
+```
+
+`-t` sets threads per Barrnap job and `-j` the number of parallel jobs; `-T` sets the temporary directory used for decompressing `.gz` assemblies (default `$TMPDIR` or `/tmp`). Genomes where Barrnap fails are listed in `<gff_dir>/failed_genomes.tsv`.
+
 ### Sequence ID Format
 
 All output sequences are assigned a unique identifier in the format:
@@ -196,6 +207,7 @@ Edit the variables at the top of `grond.sh` to adjust:
 | `get_taxonomy.py` | Python | Taxonomy assignment (taxRep, taxLCA, taxMaj) for all sequence types and thresholds |
 | `get_genome_stats.py` | Python | Per-taxon genome size and rRNA copy number statistics |
 | `replace_headers.py` | Python | FASTA header replacement with unique operon/gene IDs |
+| `fill_missing_gff.sh` | Bash | Runs Barrnap for manifest genomes with a FASTA but no GFF and writes an updated manifest |
 | `tidy_largefiles.sh` | Bash | Removes the TEMP working directory left behind by an aborted or interrupted run |
 
 ## Note on Database Construction
