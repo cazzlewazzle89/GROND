@@ -98,7 +98,28 @@ A `taxFull` file is also provided mapping every sequence in the source dataset t
 
 ## Dependencies for Database Construction
 
-Make sure these are in your `$PATH`. The conda environment can be created using `conda env create -f grond.yml`, which will create an environment called `grond` loadable with `conda activate grond`.
+The software below must be in your `$PATH`. The simplest way to install everything is with the supplied conda environment.
+
+### Installation
+
+Clone the repository and create the `grond` environment from `grond.yml` (`mamba` can be substituted for `conda` for a faster install):
+
+```bash
+git clone https://github.com/cazzlewazzle89/GROND.git
+cd GROND
+conda env create -f grond.yml
+conda activate grond
+```
+
+Alternatively, the environment can be created without the YAML file:
+
+```bash
+conda create -n grond -c conda-forge -c bioconda \
+    "python>=3.9" "pandas>=1.3" "numpy>=1.21" \
+    "barrnap>=0.9" "bedtools>=2.30" "bbmap>=38.90" "seqkit>=2.2" "vsearch>=2.17"
+```
+
+Conda also installs HMMER (required by Barrnap) and Java (required by BBTools) as dependencies. The shell scripts additionally use standard Unix utilities (`bash`, `awk`, `sed`, `gunzip`, `xargs`), which are available on any Linux system. Linux is recommended; some Bioconda packages may not be available for Apple Silicon Macs.
 
 ### Command Line Tools
 
