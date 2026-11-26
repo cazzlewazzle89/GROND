@@ -148,7 +148,7 @@ export -f run_barrnap
 export GFF_DIR WORK_DIR FAILED_FILE THREADS
 
 if [ "$n_todo" -gt 0 ]; then
-    echo "Running barrnap (kingdom from GTDB domain, --reject 0.8) on ${n_todo} genomes with ${JOBS} parallel job(s) x ${THREADS} thread(s)..."
+    echo "Running barrnap (kingdom from GTDB domain) on ${n_todo} genomes with ${JOBS} parallel job(s) x ${THREADS} thread(s)..."
     tr '\t\n' '\0\0' < "$TODO_FILE" \
         | xargs -0 -n 3 -P "$JOBS" bash -c 'run_barrnap "$@"' _
 fi

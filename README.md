@@ -163,14 +163,9 @@ GCA_000001405	/data/genomes/GCA_000001405.fna.gz	/data/gff/GCA_000001405_rrna.gf
 
 Both absolute and relative paths are supported for `path_to_fna` and `path_to_gff`. Relative paths are resolved from the directory where `grond.sh` is invoked.
 
-Barrnap should be run with `--reject 0.8` to be consistent with the published database. For example:
-```bash
-barrnap --threads 24 --reject 0.8 genome.fna > genome_rrna.gff
-```
-
 ### Filling in Missing GFF Files
 
-If some manifest genomes have a FASTA assembly but no Barrnap GFF, `fill_missing_gff.sh` runs Barrnap on them (`--reject 0.8`, kingdom `arc` for GTDB `d__Archaea` genomes and `bac` otherwise), writes the GFFs to a local directory, and writes an updated manifest pointing at them. The input manifest is not modified, rows with a missing FASTA are left unchanged, and existing GFFs in the output directory are reused so interrupted runs can be resumed.
+If some manifest genomes have a FASTA assembly but no Barrnap GFF, `fill_missing_gff.sh` runs Barrnap on them (kingdom `arc` for GTDB `d__Archaea` genomes and `bac` otherwise), writes the GFFs to a local directory, and writes an updated manifest pointing at them. The input manifest is not modified, rows with a missing FASTA are left unchanged, and existing GFFs in the output directory are reused so interrupted runs can be resumed.
 
 ```bash
 bash SCRIPTS/fill_missing_gff.sh -i manifest.tsv -o manifest_updated.tsv -d barrnap_gff -t 4 -j 6
