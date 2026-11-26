@@ -135,7 +135,7 @@ run_barrnap() {
     fi
 
     # Write to a temporary file and move into place, so partial outputs are never mistaken for complete ones
-    if barrnap --threads "$THREADS" --kingdom "$kingdom" --reject 0.8 --quiet "$input" > "${out}.tmp" 2> "${WORK_DIR}/${genomeID}.log"; then
+    if barrnap --threads "$THREADS" --kingdom "$kingdom" --quiet "$input" > "${out}.tmp" 2> "${WORK_DIR}/${genomeID}.log"; then
         mv "${out}.tmp" "$out"
     else
         echo -e "${genomeID}\t${fna}\tbarrnap failed: $(tail -n 1 "${WORK_DIR}/${genomeID}.log")" >> "$FAILED_FILE"
